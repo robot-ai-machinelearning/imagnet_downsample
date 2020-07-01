@@ -74,3 +74,35 @@ def resize_img_folder(in_dir, out_dir, alg):
             with open("log.txt", "a") as f:
                 f.write("Couldn't resize: %s" % os.path.join(in_dir, filename))
 
+if __name__ == '__main__':
+    in_dir, out_dir, alg_str, size, recurrent, full, every_nth, processes = parse_arguments()
+
+    print('Starting ...')
+
+    if full is False:
+        algs = [alg_str]
+    else:
+        algs = alg_dict.keys()
+
+    pool = Pool(processes=processes)
+
+    repeat = False
+    for alg in algs:
+        print('Using algorithm %s ...' % alg)
+        current_out_dir = os.path.join(out_dir, alg)
+        if recurrent:
+            print('Recurrent for all folders in in_dir:\n %s' % in_dir)
+            folders = [dir for dir in sorted(os.listdir(in_dir)) if os.path.isdir(os.path.join(in_dir, dir))]
+            for i, folder in enumerate(folders):
+                if i % every_nth is 0 or repeat is True:
+                    r = pool.apply_async(
+                        func=resize_img_folder,
+                        args=[os.path.join(in_dir, folder), os.path.join(current_out_dir, folder), alg])
+
+        else:
+            print('For folder %s' % in_dir)
+            resize_img_folder(in_dir=in_dir, out_dir=current_out_dir, alg=alg)
+    pool.close()
+    pool.join()
+    print("Finished.")
+
