@@ -1,0 +1,1 @@
+python image2numpy_imagenet_train.py -i ~/data/box -o ~/out_data_train
