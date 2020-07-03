@@ -1,9 +1,11 @@
+# http://stackoverflow.com/questions/35032675/how-to-create-dataset-similar-to-cifar-10/35034287
+
 from argparse import ArgumentParser
 import numpy as np
 import os
 from utils import *
 import imageio
-import pickle
+
 
 def parse_arguments():
     parser = ArgumentParser()
@@ -16,7 +18,7 @@ def parse_arguments():
 
 def process_folder(in_dir, out_dir):
     label_dict = get_label_dict()
-    folders = [dir for dir in sorted(os.listdir(in_dir)) if os.path.isdir(os.path.join(in_dir, dir))]
+    folders = get_ordered_folders()
     val_ground_dict = get_val_ground_dict()
 
     # Subsampling folders could be useful when we want to create smaller dataset
@@ -28,29 +30,35 @@ def process_folder(in_dir, out_dir):
 
     # Table contains labels that are associated with those folders
     labels_searched = []
+    for folder in folders:
+        labels_searched.append(label_dict[folder])
+
+    print("Processing folder %s" % in_dir)
     labels_list = []
     images = []
+    for image_name in os.listdir(in_dir):
+        # Get label for that image
+        # If it was resized using 'image_resizer_imagenet.py' script then we know that it has extension '.png'
+        label = val_ground_dict[image_name[:-4]]
 
-    for folder in folders:
-        print("Processing folder %s" % in_dir)
-        for image_name in os.listdir(os.path.join(in_dir, folder)):
-            # Get label for that image
-            # If it was resized using 'image_resizer_imagenet.py' script then we know that it has extension '.png'
-            print(image_name[:-4])
-            label = val_ground_dict[image_name[:-4]]
-            try:
-                img = imageio.imread(os.path.join(in_dir, folder  , image_name))
-                r = img[:, :, 0].flatten()
-                g = img[:, :, 1].flatten()
-                b = img[:, :, 2].flatten()
-            except:
-                print('Cant process image %s' % image_name)
-                with open("log_img2np_val.txt", "a") as f:
-                    f.write("Couldn't read: %s" % os.path.join(in_dir, image_name))
-                continue
-            arr = np.array(list(r) + list(g) + list(b), dtype=np.uint8)
-            images.append(arr)
-            labels_list.append(label)
+        # Ignore if it's not one of the subsampled classes
+        if label not in labels_searched:
+            continue
+        try:
+            img = imageio.imread(os.path.join(in_dir, image_name))
+            r = img[:, :, 0].flatten()
+            g = img[:, :, 1].flatten()
+            b = img[:, :, 2].flatten()
+
+        except:
+            print('Cant process image %s' % image_name)
+            with open("log_img2np_val.txt", "a") as f:
+                f.write("Couldn't read: %s" % os.path.join(in_dir, image_name))
+            continue
+        arr = np.array(list(r) + list(g) + list(b), dtype=np.uint8)
+        images.append(arr)
+        labels_list.append(label)
+
     data_val = np.row_stack(images)
 
     # Can add some kind of data splitting
@@ -79,4 +87,3 @@ if __name__ == '__main__':
     print("Start program ...")
     process_folder(in_dir=in_dir, out_dir=out_dir)
     print("Finished.")
-
