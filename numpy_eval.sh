@@ -1,1 +1,1 @@
-python image2numpy_imagenet_val.py -i ~/data/val/box -o ~/out_data_val
+python3 img_to_numpy_val.py -i ~/data/imagenet_ds/val/box -o ~/data/imagenet_ds/val/out_data_val
