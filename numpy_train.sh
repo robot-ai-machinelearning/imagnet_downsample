@@ -1,1 +1,0 @@
-python3 img_to_numpy_train.py -i ~/data/imagenet_ds/train/box -o ~/data/imagenet_ds/train/out_data_train

@@ -1,8 +1,0 @@
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n02112137_11904.png 
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n03452741_4785.png 
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n03976467_14502.png 
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n04009552_14124.png 
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n04179913_12006.png 
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n04228054_2415.png 
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n04536866_12128.png 
-Couldn't read: /home/ubuntu/data/imagenet_ds/train/box/n04542943_2278.png 
