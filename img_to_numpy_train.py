@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 from utils import *
 import os
-from scipy import misc
 import numpy as np
 import imageio
 import pickle
